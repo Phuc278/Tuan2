@@ -1,0 +1,35 @@
+package GUI;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class ReceiverGUI {
+	  public ReceiverGUI() {
+		  JFrame frame = new JFrame("JMS Chat");
+		  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		  JTextArea taChat = new JTextArea();
+		  frame.getContentPane().add(taChat,BorderLayout.CENTER);
+		  Box north=new Box(BoxLayout.X_AXIS);
+		  north.add(new JLabel("User Name:"));
+		  JTextField tfUser = new JTextField();
+		  north.add(this.tfUser);
+		  frame.getContentPane().add(north,BorderLayout.NORTH);
+		  Box south=new Box(BoxLayout.X_AXIS);
+		  south.add(new JLabel("Message:"));
+		  this.tfMessage=new JTextField();
+		  south.add(this.tfMessage);
+		  JButton btSend=new JButton("Send");
+		  btSend.addActionListener(this);
+		  south.add(btSend);
+		  frame.getContentPane().add(south,BorderLayout.SOUTH);
+		  int width=300;
+		  int height=300;
+		  frame.setSize(width,height);
+		  frame.setVisible(true);
+	}
+}

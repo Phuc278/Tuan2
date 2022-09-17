@@ -1,0 +1,78 @@
+package GUI;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import org.apache.qpid.jms.JmsConnectionFactory;
+
+public class SenderGUI extends JFrame implements ActionListener {
+	private JButton btnSend;
+	private JTextField txtMessage;
+
+	public SenderGUI() {
+		setTitle("Sender");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(300, 300);
+		JLabel lblMessage = new JLabel("Message");
+		txtMessage = new JTextField();
+
+		btnSend = new JButton("Send");
+		Box south = new Box(BoxLayout.X_AXIS);
+		south.add(lblMessage);
+		south.add(txtMessage);
+		Box north = new Box(BoxLayout.Y_AXIS);
+		north.add(south);
+		north.add(btnSend);
+		this.add(north);
+		btnSend.addActionListener(this);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.equals(btnSend)) {
+			System.out.println("Create a ConnectionFactory");
+			// ActiveMQConnectionFactory connectionFactory = new
+			// ActiveMQConnectionFactory("tcp://localhost:61616");
+			ConnectionFactory connectionFactory = new JmsConnectionFactory("amqp://localhost:5672");
+			System.out.println("Create a Connection");
+			try {
+			Connection connection = connectionFactory.createConnection("admin", "admin");
+			connection.start();
+			System.out.println("Create a Session");
+			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			System.out.println("Create a Topic/ Queue based on the given parameter");
+			Destination destination = null;
+
+			destination = session.createQueue("gpcoder-jms-queue");
+			connection.close();
+			System.exit(1);
+			MessageProducer producer = session.createProducer(destination);
+			System.out.println("Start sending messages ... ");
+			TextMessage msg = session.createTextMessage(txtMessage.getText());
+			producer.send(msg);
+			System.out.println("Shutdown JMS connection and free resources");
+			connection.close();
+			System.exit(1);
+			} catch (Exception es) {
+				// TODO: handle exception
+				es.printStackTrace();
+			}
+		}
+	}
+}

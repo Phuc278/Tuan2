@@ -1,0 +1,15 @@
+package main;
+
+import java.awt.Frame;
+
+import GUI.SenderGUI;
+
+public class started extends Frame{
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		SenderGUI sender = new SenderGUI();
+		  sender.setVisible(true);
+	}
+
+}

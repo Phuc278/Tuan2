@@ -1,0 +1,36 @@
+package GUI;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class ReceiverGUI extends JFrame implements ActionListener {
+	public ReceiverGUI() {
+		setTitle("Receiver");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(300, 300);
+		JLabel lblMessage = new JLabel("Message");
+		JTextField txtMessage = new JTextField();
+
+		JButton btnSend = new JButton("Send");
+		Box south = new Box(BoxLayout.X_AXIS);
+		south.add(lblMessage);
+		south.add(txtMessage);
+		south.add(btnSend);
+
+		btnSend.addActionListener(this);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+}

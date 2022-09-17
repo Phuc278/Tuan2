@@ -1,0 +1,77 @@
+package GUI;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import org.apache.qpid.jms.JmsConnectionFactory;
+
+public class ReceiverGUI extends JFrame implements ActionListener {
+	private JButton btnSend;
+
+	public ReceiverGUI() {
+		setTitle("Receiver");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(300, 300);
+		JLabel lblMessage = new JLabel("Message");
+		JTextField txtMessage = new JTextField();
+
+		btnSend = new JButton("Send");
+		Box south = new Box(BoxLayout.X_AXIS);
+		south.add(lblMessage);
+		south.add(txtMessage);
+		Box north = new Box(BoxLayout.Y_AXIS);
+		north.add(south);
+		north.add(btnSend);
+		this.add(north);
+		btnSend.addActionListener(this);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.equals(btnSend)) {
+			System.out.println("Create a ConnectionFactory");
+			// ActiveMQConnectionFactory connectionFactory = new
+			// ActiveMQConnectionFactory("tcp://localhost:61616");
+			try {
+				ConnectionFactory connectionFactory = new JmsConnectionFactory("http://localhost:8161/");
+				System.out.println("Create a Connection");
+				Connection connection = connectionFactory.createConnection("admin", "admin");
+				connection.start();
+				System.out.println("Create a Session");
+				Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+				Destination destination = null;
+				destination = session.createQueue("duy-jms-queue");
+				connection.close();
+				MessageConsumer consumer = session.createConsumer(destination);
+				System.out.println("Start receiving messages ... ");
+				String body;
+				do {
+					Message msg = consumer.receive();
+					body = ((TextMessage) msg).getText();
+					System.out.println("Received = " + body);
+				} while (!body.equalsIgnoreCase("close"));
+				System.out.println("Shutdown JMS connection and free resources");
+				connection.close();
+			} catch (Exception e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+package main;
+
+import GUI.SenderGUI;
+
+public class started {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		SenderGUI sender = new SenderGUI();
+		
+	}
+
+}
